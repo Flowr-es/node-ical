@@ -100,7 +100,7 @@ declare module '@flowr-es/node-ical' {
     prodid?: string;
     version?: string;
     calscale?: 'GREGORIAN' | string;
-    method?: Class;
+    method?: Method;
     'WR-CALNAME'?: string;
     'WR-TIMEZONE'?: string;
   }
