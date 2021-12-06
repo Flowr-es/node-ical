@@ -245,5 +245,5 @@ module.exports = {
   // Other backwards compat things
   objectHandlers: ical.objectHandlers,
   handleObject: ical.handleObject,
-  parseLines: ical.parseLines
+  parseLines: ical.parseLines,
 };

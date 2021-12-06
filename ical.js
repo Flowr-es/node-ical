@@ -1,4 +1,4 @@
-/* eslint-disable max-depth, max-params, no-warning-comments, complexity */
+/* eslint-disable max-params, no-warning-comments, complexity */
 
 const {v4: uuid} = require('uuid');
 const moment = require('moment-timezone');
@@ -146,9 +146,7 @@ function getTimeZone(value) {
   // Timezone not confirmed yet
   if (found === '') {
     // Lookup tz
-    found = moment.tz.names().find(zone => {
-      return zone === tz;
-    });
+    found = moment.tz.names().find(zone => zone === tz);
   }
 
   return found === '' ? tz : found;
@@ -208,8 +206,8 @@ const dateParameter = function (name) {
             Number.parseInt(comps[3], 10),
             Number.parseInt(comps[4], 10),
             Number.parseInt(comps[5], 10),
-            Number.parseInt(comps[6], 10)
-          )
+            Number.parseInt(comps[6], 10),
+          ),
         );
         newDate.tz = 'Etc/UTC';
       } else if (parameters && parameters[0] && parameters[0].includes('TZID=') && parameters[0].split('=')[1]) {
@@ -252,9 +250,7 @@ const dateParameter = function (name) {
         // Timezone not confirmed yet
         if (found === '') {
           // Lookup tz
-          found = moment.tz.names().find(zone => {
-            return zone === tz;
-          });
+          found = moment.tz.names().find(zone => zone === tz);
         }
 
         // Timezone confirmed or forced to offset
@@ -264,7 +260,7 @@ const dateParameter = function (name) {
           Number.parseInt(comps[3], 10),
           Number.parseInt(comps[4], 10),
           Number.parseInt(comps[5], 10),
-          Number.parseInt(comps[6], 10)
+          Number.parseInt(comps[6], 10),
         );
 
         newDate = addTZ(newDate, parameters);
@@ -275,7 +271,7 @@ const dateParameter = function (name) {
           Number.parseInt(comps[3], 10),
           Number.parseInt(comps[4], 10),
           Number.parseInt(comps[5], 10),
-          Number.parseInt(comps[6], 10)
+          Number.parseInt(comps[6], 10),
         );
       }
     }
@@ -397,8 +393,19 @@ module.exports = {
           let object;
           const highLevel = {};
 
+          // Rewrite all events, timezones etc from the object into the array to preserve the order
+          if (curr.calendarComponents) {
+            const rebuildComponents = [];
+            for (const key of curr.calendarComponents) {
+              rebuildComponents.push(curr[key]);
+              delete curr[key];
+            }
+
+            curr.calendarComponents = rebuildComponents;
+          }
+
           for (key in curr) {
-            if (!{}.hasOwnProperty.call(curr, key)) {
+            if (!Object.prototype.hasOwnProperty.call(curr, key)) {
               continue;
             }
 
@@ -417,6 +424,14 @@ module.exports = {
         }
 
         const par = stack.pop();
+        // Contains the order, will be converted in the end from ids to objects
+        if (!par.calendarComponents) {
+          par.calendarComponents = [];
+        }
+
+        if (curr.uid && !par.calendarComponents.includes(curr.uid)) {
+          par.calendarComponents.push(curr.uid);
+        }
 
         if (!curr.end) { // RFC5545, 3.6.1
           if (curr.datetype === 'date-time') {
@@ -426,15 +441,15 @@ module.exports = {
             // Set the end to the start plus one day RFC5545, 3.6.1
             curr.end = moment.utc(curr.start).add(1, 'days').toDate(); // New Date(moment(curr.start).add(1, 'days'));
           } else {
-            const durationUnits =
-              {
+            const durationUnits
+              = {
                 // Y: 'years',
                 // M: 'months',
                 W: 'weeks',
                 D: 'days',
                 H: 'hours',
                 M: 'minutes',
-                S: 'seconds'
+                S: 'seconds',
               };
             // Get the list of duration elements
             const r = curr.duration.match(/-?\d+[YMWDHS]/g);
@@ -528,6 +543,8 @@ module.exports = {
         } else {
           const id = uuid();
           par[id] = curr;
+          //  Manage order
+          par.calendarComponents.push(id);
 
           if (par.method) { // RFC5545, 3.2
             par[id].method = par.method;
@@ -560,7 +577,7 @@ module.exports = {
               // Calculate the new startdate with the offset applied, bypass RRULE/Luxon confusion
               // Make the internally stored DATE the actual date (not UTC offseted)
               // Luxon expects local time, not utc, so gets start date wrong if not adjusted
-              curr.start = new Date(curr.start.getTime() + (Math.abs(offset) * 60000));
+              curr.start = new Date(curr.start.getTime() + (Math.abs(offset) * 60_000));
             } else {
               // Get rid of any time (shouldn't be any, but be sure)
               x = moment(curr.start).format('MMMM/Do/YYYY');
@@ -626,7 +643,7 @@ module.exports = {
     RRULE(value, parameters, curr, stack, line) {
       curr.rrule = line;
       return curr;
-    }
+    },
   },
 
   handleObject(name, value, parameters, ctx, stack, line) {
@@ -741,5 +758,5 @@ module.exports = {
       ctx = this.parseLines(lines, lines.length);
       return ctx;
     }
-  }
+  },
 };

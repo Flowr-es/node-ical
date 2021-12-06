@@ -48,9 +48,10 @@ declare module '@flowr-es/node-ical' {
      */
   export type NodeIcalCallback = (error: any, data: CalendarResponse) => void;
 
-  export type CalendarResponse = Record<string, CalendarComponent>;
+  export type CalendarResponse = {vcalendar: VCalendar; calendarComponents: CalendarComponent[]};
+  // Record<string, CalendarComponent>;
 
-  export type CalendarComponent = VTimeZone | VEvent | VCalendar;
+  export type CalendarComponent = VTimeZone | VEvent;
 
   export type VTimeZone = TimeZoneProps & TimeZoneDictionary;
 
@@ -82,7 +83,7 @@ declare module '@flowr-es/node-ical' {
     lastmodified: DateWithTimeZone;
     rrule?: RRule;
     attendee?: Attendee[] | Attendee;
-    /* eslint-disable-next-line @typescript-eslint/ban-types */
+
     recurrences?: Record<string, Omit<VEvent, 'recurrences'>>;
 
     // I am not entirely sure about these, leave them as any for now..

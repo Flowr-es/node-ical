@@ -20,6 +20,21 @@ node-ical is availble on npm:
 npm install node-ical
 ```
 
+## IMPORTANT NOTICE
+Breaking changes in this fork!
+Instead of manageing all Events, Timezone etc in the Response as key, value they are added into an array named calendarComponents as objects aren't ensuring the order. Also all calendar metadata is preserved in an vcalender object.
+A parse Calendar looks like this:
+```typescript
+import * as icalParser from '@flowr-es/node-ical';
+const rawICalData = (await readFile('test.ics')).toString()
+const calendar: icalParser.CalendarResponse = await icalParser.async.parseICS(rawICalData);
+// this is only the structure
+calendar = {
+    vcalendar: {},
+    calendarComponents: [ { type: 'VTIMEZONE', ...}, { type: 'VEVENT', uid: 'xyz@zyx.de' ...}]
+}
+```
+
 ## API
 The API has now been broken into three sections:
  - [sync](#sync)
