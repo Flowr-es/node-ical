@@ -1,6 +1,6 @@
 {
     "name": "@flowr-es/node-ical",
-    "version": "0.16.1",
+    "version": "0.16.2",
     "main": "node-ical.js",
     "types": "node-ical.d.ts",
     "description": "NodeJS class for parsing iCalendar/ICS files",

@@ -17,7 +17,8 @@ const text = function (t = '') {
         .replace(/\\,/g, ',')
         .replace(/\\;/g, ';')
         .replace(/\\[nN]/g, '\n')
-        .replace(/\\\\/g, '\\');
+        .replace(/\\\\/g, '\\')
+        .trim();
 };
 
 const parseValue = function (value) {
@@ -181,6 +182,9 @@ const typeParameter = function (name) {
 
 const dateParameter = function (name) {
     return function (value, parameters, curr) {
+        if (typeof value === 'string') {
+            value = value.trim();
+        }
         // The regex from main gets confued by extra :
         const pi = parameters.indexOf('TZID=tzone');
         if (pi >= 0) {
