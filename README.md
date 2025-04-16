@@ -99,14 +99,6 @@ const ical = require('node-ical');
     // load and parse this file without blocking the event loop
     const events = await ical.async.parseFile('example-calendar.ics');
 
-    // you can also use the async lib to download and parse iCal from the web
-    const webEvents = await ical.async.fromURL('http://lanyrd.com/topics/nodejs/nodejs.ics');
-    // also you can pass options to axios.get() (optional though!)
-    const headerWebEvents = await ical.async.fromURL(
-        'http://lanyrd.com/topics/nodejs/nodejs.ics',
-        { headers: { 'User-Agent': 'API-Example / 1.0' } }
-    );
-
     // parse iCal data without blocking the main loop for extra-large events
     const directEvents = await ical.async.parseICS(`
 BEGIN:VCALENDAR
@@ -134,9 +126,6 @@ ical.async.parseFile('example-calendar.ics', function(err, data) {
     }
     console.log(data);
 });
-
-// or a URL
-ical.async.fromURL('http://lanyrd.com/topics/nodejs/nodejs.ics', function(err, data) { console.log(data); });
 
 // or directly
 ical.async.parseICS(`
@@ -188,34 +177,6 @@ const data = ical.parseFile(filename, function(err, data) {
 });
 ```
 
-Reads in the specified iCal file from the URL, parses it and returns the parsed data.
-```javascript
-const ical = require('node-ical');
-ical.fromURL(url, options, function(err, data) {
-    if (err) console.log(err);
-    console.log(data);
-});
-```
-
-Use the axios library to get the specified URL (```opts``` gets passed on to the ```axios.get()``` call), and call the function with the result. (either an error or the data)
-
-#### Example 1 - Print list of upcoming node conferences (see example.js) (parses the file synchronous)
-```javascript
-const ical = require('node-ical');
-const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-
-ical.fromURL('http://lanyrd.com/topics/nodejs/nodejs.ics', {}, function (err, data) {
-    for (let k in data) {
-        if (data.hasOwnProperty(k)) {
-            const ev = data[k];
-            if (data[k].type == 'VEVENT') {
-                console.log(`${ev.summary} is in ${ev.location} on the ${ev.start.getDate()} of ${months[ev.start.getMonth()]} at ${ev.start.toLocaleTimeString('en-GB')}`);
-            }
-        }
-    }
-});
-```
-
 ### Recurrence rule (RRule)
 
 Recurrence rule will be created with timezone **if present in `DTSTART`**
@@ -227,8 +188,9 @@ If no timezone were provided when recurrence rule were created, recurrence dates
 ```javascript
 const ical = require('node-ical');
 const moment = require('moment-timezone');
-
-ical.fromURL('http://lanyrd.com/topics/nodejs/nodejs.ics', {}, function (err, data) {
+const getFileFromWeb = 'http://lanyrd.com/topics/nodejs/nodejs.ics';
+const icsFile = fetch(getFileFromWeb);
+ical.parseICS(icsFile, {}, function (err, data) {
     for (let k in data) {
         if (!Object.prototype.hasOwnProperty.call(data, k)) continue;
 

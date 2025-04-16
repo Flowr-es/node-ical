@@ -15,24 +15,4 @@ const months = [
   'Dec',
 ];
 
-ical.fromURL(
-  'https://raw.githubusercontent.com/jens-maus/node-ical/master/test/test6.ics',
-  {},
-  (error, data) => {
-    if (error) {
-      console.log(new Error('ERROR: ' + error));
-    } else {
-      for (const ev of data.calendarComponents) {
-        if (ev.type === 'VEVENT') {
-          console.log(
-            `${ev.summary} is in ${
-              ev.location
-            } on the ${ev.start.getDate()} of ${
-              months[ev.start.getMonth()]
-            } at ${ev.start.toLocaleTimeString('en-GB')}`,
-          );
-        }
-      }
-    }
-  },
 );

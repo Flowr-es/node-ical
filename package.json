@@ -1,6 +1,6 @@
 {
     "name": "@flowr-es/node-ical",
-    "version": "0.16.3",
+    "version": "0.17.0",
     "main": "node-ical.js",
     "types": "node-ical.d.ts",
     "description": "NodeJS class for parsing iCalendar/ICS files",
@@ -18,7 +18,6 @@
         "url": "git://github.com/Flowr-es/node-ical.git"
     },
     "dependencies": {
-        "axios": "^1.8.4",
         "moment-timezone": "^0.5.48",
         "rrule": "2.8.1",
         "uuid": "^11.1.0"

@@ -1073,18 +1073,6 @@ vows.describe('node-ical')
             },
         },
 
-        'url request errors': {
-            topic() {
-                ical.fromURL('http://255.255.255.255/', {}, this.callback);
-            },
-            'are passed back to the callback'(error, result) {
-                assert.instanceOf(error, Error);
-                if (!error) {
-                    console.log('>E:', error, result);
-                }
-            },
-        },
-
         'with test 19.ics (complex organizer)': {
             topic() {
                 return ical.parseFile('./test/test19.ics');
