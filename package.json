@@ -1,6 +1,6 @@
 {
     "name": "@flowr-es/node-ical",
-    "version": "0.16.2",
+    "version": "0.16.3",
     "main": "node-ical.js",
     "types": "node-ical.d.ts",
     "description": "NodeJS class for parsing iCalendar/ICS files",
@@ -18,10 +18,10 @@
         "url": "git://github.com/jens-maus/node-ical.git"
     },
     "dependencies": {
-        "axios": "^0.24.0",
-        "moment-timezone": "^0.5.34",
-        "rrule": "2.6.4",
-        "uuid": "^8.3.1"
+        "axios": "^1.8.4",
+        "moment-timezone": "^0.5.48",
+        "rrule": "2.8.1",
+        "uuid": "^11.1.0"
     },
     "devDependencies": {
         "@types/node": "^14.14.31",
@@ -31,34 +31,13 @@
         "eslint": "^7.11.0",
         "eslint-config-prettier": "^8.1.0",
         "eslint-plugin-import": "^2.25.3",
-        "pre-commit": "^1.2.2",
         "set-value": ">=4.0.1",
-        "underscore": "1.13.1",
+        "underscore": "^1.13.7",
         "vows": "^0.8.3",
-        "xml-js": "^1.6.11",
-        "xo": "^0.47.0"
+        "xml-js": "^1.6.11"
     },
-    "xo": {
-        "envs": [
-            "node",
-            "mocha"
-        ],
-        "space": 2,
-        "rules": {
-            "unicorn/prefer-module": "off",
-            "unicorn/import-style": "warn",
-            "node/no-deprecated-api": "warn",
-            "@typescript-eslint/naming-convention": "off"
-        }
-    },
-    "pre-commit": [
-        "lintfix"
-    ],
     "scripts": {
-        "test": "xo && vows test/test.js && vows test/test-async.js && printf \"\\n\"",
-        "lint": "xo",
-        "lintfix": "xo --fix",
-        "precommit": "npm run lint && npm run lintfix",
+        "test": "vows test/test.js && vows test/test-async.js && printf \"\\n\"",
         "build": "build/updatejson.sh"
     },
     "readmeFilename": "README.md"
